@@ -1,15 +1,15 @@
 import { ArgsType, Field, InputType, Int } from '@nestjs/graphql';
 import { BaseArgs } from 'src/_bases/dto/base.args';
-import { MenuFilterArgs } from './menu-filter.args';
-import { MenuOrderArgs } from './menu-order.args';
+import { ShipmentFilterArgs } from './shipment-filter.args';
+import { ShipmentOrderArgs } from './shipment-order.args';
 
 @InputType()
-export class MenuArgs extends BaseArgs {
+export class ShipmentArgs extends BaseArgs {
 
-    @Field(() => MenuFilterArgs, {nullable: true})
-    filter: MenuFilterArgs
+    @Field(() => ShipmentFilterArgs, {nullable: true})
+    filter: ShipmentFilterArgs
 
-    @Field(() => MenuOrderArgs, {nullable: true})
-    orderBy: MenuOrderArgs
+    @Field(() => ShipmentOrderArgs, {nullable: true})
+    orderBy: ShipmentOrderArgs
     
 }

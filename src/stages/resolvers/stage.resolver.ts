@@ -1,72 +1,72 @@
 import { Resolver, Mutation, Query, Args, InputType, Int, Info, ResolveReference } from '@nestjs/graphql';
 import { InjectRepository } from '@nestjs/typeorm';
-import { InputError } from 'src/_bases/entities/input_error.entity';
-import { ServerError } from 'src/_bases/entities/server_error.entity';
+import { InputError } from 'src/_bases/entities/input-error.entity';
+import { ServerError } from 'src/_bases/entities/server-error.entity';
 import { Repository } from 'typeorm';
-import { DeliverymanArgs } from '../dto/deliveryman.args';
-import { DeliverymanInput } from '../dto/deliveryman.input';
-import { PaginatedDeliveryman, PaginatedDeliverymanResult, Deliveryman, DeliverymanResult } from '../entities/deliveryman.entity';
-import { DeliverymanService } from '../services/deliveryman.service';
+import { StageArgs } from '../dto/stage.args';
+import { StageInput } from '../dto/stage.input';
+import { PaginatedStage, PaginatedStageResult, Stage, StageResult } from '../entities/stage.entity';
+import { StageService } from '../services/stage.service';
 
 
-@Resolver(() => Deliveryman)
-export class DeliverymanResolver {
+@Resolver(() => Stage)
+export class StageResolver {
 
     constructor(
-        private readonly deliverymanService: DeliverymanService,
-        @InjectRepository(Deliveryman) private deliverymanRepository: Repository<Deliveryman>,
+        private readonly stageService: StageService,
+        @InjectRepository(Stage) private stageRepository: Repository<Stage>,
     ) {}
 
     @ResolveReference()
-    resolveReference(reference: { __typename: string; id: number }): Deliveryman | any {
-        return this.deliverymanService.findOne(reference.id);
+    resolveReference(reference: { __typename: string; id: number }): Stage | any {
+        return this.stageService.findOne(reference.id);
     }
 
-    @Query(() => DeliverymanResult, {name: 'deliveryman'})
-    public async getOne(@Args('id') id: number): Promise<typeof DeliverymanResult> {
+    @Query(() => StageResult, {name: 'stage'})
+    public async getOne(@Args('id') id: number): Promise<typeof StageResult> {
         try {
-            const deliveryman = await this.deliverymanService.findOne(id);
-            if (!deliveryman) return new InputError("Ce livreur n'éxiste pas.") 
-            return deliveryman
+            const stage = await this.stageService.findOne(id);
+            if (!stage) return new InputError("Ce livreur n'éxiste pas.") 
+            return stage
         } catch (error) {
             return new ServerError("Une erreur est survenue.", error) 
         };
     }
 
-    @Query(() => PaginatedDeliverymanResult, {name: 'deliverymans'})
-    public async getMany(@Args('deliverymanArgs') deliverymansArgs: DeliverymanArgs, @Info() infos: any): Promise<typeof PaginatedDeliverymanResult> {
+    @Query(() => PaginatedStageResult, {name: 'stages'})
+    public async getMany(@Args('stageArgs') stagesArgs: StageArgs, @Info() infos: any): Promise<typeof PaginatedStageResult> {
         try {
-            const deliverymans = await this.deliverymanService.findAll(deliverymansArgs, infos, 'deliverymans');
-            const count  = await this.deliverymanService.count(deliverymansArgs)
-            const hasNext = (count - (++(deliverymansArgs.page) * deliverymansArgs.take)) > 0
-            return new PaginatedDeliveryman(deliverymans, count, hasNext)
+            const stages = await this.stageService.findAll(stagesArgs, infos, 'stages');
+            const count  = await this.stageService.count(stagesArgs)
+            const hasNext = (count - (++(stagesArgs.page) * stagesArgs.take)) > 0
+            return new PaginatedStage(stages, count, hasNext)
         } catch (error) {
             return new ServerError("Une erreur est survenue.", error) 
         }
     }
 
-    @Mutation(() => DeliverymanResult, { name: 'saveDeliveryman' })
-    public async upsert(@Args('deliverymanInput') deliverymanInput: DeliverymanInput): Promise<typeof DeliverymanResult> {
+    @Mutation(() => StageResult, { name: 'saveStage' })
+    public async upsert(@Args('stageInput') stageInput: StageInput): Promise<typeof StageResult> {
         try {
-            if(deliverymanInput.id){
-                const updated = await this.deliverymanService.update(deliverymanInput.id, deliverymanInput)
-                if(updated) return await this.deliverymanService.findOne(deliverymanInput.id)
+            if(stageInput.id){
+                const updated = await this.stageService.update(stageInput.id, stageInput)
+                if(updated) return await this.stageService.findOne(stageInput.id)
                 else return new InputError("Ce livreur n'éxiste pas.")
             } 
     
-            let entity = this.deliverymanRepository.create(deliverymanInput);
-            return await this.deliverymanService.create(entity);
+            let entity = this.stageRepository.create(stageInput);
+            return await this.stageService.create(entity);
         } 
         catch (e) {
             return new ServerError("Une erreur est survenue.", e) 
         }
     }
 
-    @Mutation(() => DeliverymanResult, { name: 'deleteDeliveryman' })
-    public async delete(@Args('id', { type: () => Int }) id: number): Promise<typeof DeliverymanResult>  {
+    @Mutation(() => StageResult, { name: 'deleteStage' })
+    public async delete(@Args('id', { type: () => Int }) id: number): Promise<typeof StageResult>  {
         try {
-            const item = await this.deliverymanService.findOne(id)
-            if(item) await this.deliverymanService.delete(id)
+            const item = await this.stageService.findOne(id)
+            if(item) await this.stageService.delete(id)
             else return new InputError("Ce livreur n'éxiste pas.")
             return item
         } 

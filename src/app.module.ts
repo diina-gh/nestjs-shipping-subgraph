@@ -6,6 +6,9 @@ import { GraphQLModule } from '@nestjs/graphql';
 import {ApolloFederationDriver, ApolloFederationDriverConfig,} from '@nestjs/apollo';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 import { join } from 'path';
+import { ShipmentModule } from './shipments/shipment.module';
+import { DeliverymanModule } from './deliverymen/deliveryman.module';
+import { StageModule } from './stages/stage.module';
 
 @Module({
   imports: [
@@ -28,8 +31,11 @@ import { join } from 'path';
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
-    // UserModule,
-    // RoleModule,
+
+    ShipmentModule,
+    DeliverymanModule,
+    StageModule,
+
   ],
   controllers: [],
   providers: [],
