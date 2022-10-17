@@ -1,0 +1,175 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+directive @key(fields: String!, resolvable: Boolean = true) repeatable on OBJECT | INTERFACE
+
+directive @extends on OBJECT | INTERFACE
+
+directive @external on OBJECT | FIELD_DEFINITION
+
+directive @requires(fields: String!) on FIELD_DEFINITION
+
+directive @provides(fields: String!) on FIELD_DEFINITION
+
+directive @shareable on FIELD_DEFINITION | OBJECT
+
+directive @link(url: String!, import: [link__Import]) on SCHEMA
+
+directive @tag(name: String!) repeatable on FIELD_DEFINITION | OBJECT | INTERFACE | UNION | ARGUMENT_DEFINITION | SCALAR | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
+
+directive @inaccessible on FIELD_DEFINITION | OBJECT | INTERFACE | UNION | ARGUMENT_DEFINITION | SCALAR | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
+
+directive @override(from: String!) on FIELD_DEFINITION
+
+type Role {
+  id: ID!
+  name: String!
+  desc: String!
+  activated: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  firstname: String!
+  lastname: String!
+  email: String!
+  users: User!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type User {
+  id: ID!
+  name: String!
+  desc: String!
+  activated: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  firstname: String!
+  lastname: String!
+  email: String!
+  roleId: Float!
+  role: Role!
+}
+
+type Query {
+  user(id: Float!): UserResult!
+  users(userArgs: UserArgs!): PaginatedUserResult!
+  roles(roleArgs: RoleArgs!): PaginatedRoleResult!
+  role(id: Float!): RoleResult!
+}
+
+union UserResult = User | InputError | ServerError
+
+type InputError {
+  message: String!
+  input: String
+  exception: String
+}
+
+type ServerError {
+  message: String!
+  exception: String
+}
+
+union PaginatedUserResult = PaginatedUser | InputError | ServerError
+
+type PaginatedUser {
+  count: Int!
+  hasNext: Boolean!
+  users: [User!]!
+}
+
+input UserArgs {
+  page: Int = 1
+  take: Int = 10
+  filter: UserFilterArgs
+  orderBy: UserOrderArgs
+}
+
+input UserFilterArgs {
+  id: Float
+  activated: Boolean
+  search: SearchrArgs
+}
+
+input SearchrArgs {
+  searchQuery: String
+  searchBy: [String!]
+}
+
+input UserOrderArgs {
+  id: Sort
+  name: Sort
+  desc: Sort
+  createdAt: Sort
+  updatedAt: Sort
+  firstname: Sort
+  lastname: Sort
+  email: Sort
+}
+
+"""Define attribute to order from."""
+enum Sort {
+  ASC
+  DESC
+}
+
+union PaginatedRoleResult = PaginatedRole | InputError | ServerError
+
+type PaginatedRole {
+  count: Int!
+  hasNext: Boolean!
+  roles: [Role!]!
+}
+
+input RoleArgs {
+  page: Int = 1
+  take: Int = 10
+  filter: RoleFilterArgs
+  orderBy: RoleOrderArgs
+}
+
+input RoleFilterArgs {
+  id: Float
+  activated: Boolean
+  search: SearchrArgs
+}
+
+input RoleOrderArgs {
+  id: Sort
+  name: Sort
+  desc: Sort
+  createdAt: Sort
+  updatedAt: Sort
+}
+
+union RoleResult = Role | InputError | ServerError
+
+type Mutation {
+  saveUser(userInput: UserInput!): UserResult!
+  deleteUser(id: Int!): UserResult!
+  saveRole(roleInput: RoleInput!): RoleResult!
+  deleteRole(id: Int!): RoleResult!
+}
+
+input UserInput {
+  id: Float
+  name: String
+  desc: String
+  activated: Boolean!
+  firstname: String!
+  lastname: String!
+  email: String!
+}
+
+input RoleInput {
+  id: Float
+  name: String
+  desc: String
+  activated: Boolean!
+}
+
+scalar link__Import
